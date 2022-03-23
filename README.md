@@ -42,7 +42,8 @@ at least include:
     *   `source build/envsetup.sh`
     *   `bazel info`
 *   **Verifying basic user journeys succeed.**
-    *   `./build/bazel/scripts/run_presubmits.sh` (or let TreeHugger run these presubmits for you)
+    * `build/bazel/scripts/milestone-2/demo.sh full`
+    * `build/bazel/scripts/milestone-2/demo.sh generate && build/bazel/scripts/milestone-2/demo.sh sync && USE_BAZEL=1 USE_BAZEL_ANALYSIS=1 m libc`
 
 Ensure that the Linux and Darwin CLs are set to the same Gerrit topic so they
 are submitted together.
