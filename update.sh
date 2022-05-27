@@ -47,7 +47,7 @@ function download_and_verify() {
     local sha256=$1; shift
 
     echo "Cleaning previous ${os} bazel binary.."
-    rm -f "bazel_nojdk-*-${os}-x86_64"
+    rm -f bazel_nojdk-*-${os}-x86_64
 
     echo "Downloading ${os} bazel binary for ${commit}.."
     downloaded_file="bazel_nojdk-${commit}-${os}-x86_64"
@@ -63,11 +63,15 @@ function download_and_verify() {
 
 # Update Linux binary.
 download_and_verify "linux" "${linux_nojdk_url}" "${linux_nojdk_sha256}"
+downloaded_file="bazel_nojdk-${commit}-linux-x86_64"
+./${downloaded_file} license > LICENSE
+
 
 (
-    # Update macOS binary.
-    cd "$(dirname "$0")/../darwin-x86_64"
-    download_and_verify "darwin" "${darwin_nojdk_url}" "${darwin_nojdk_sha256}"
+  # Update macOS binary.
+  cp LICENSE "$(dirname "$0")/../darwin-x86_64/"
+  cd "$(dirname "$0")/../darwin-x86_64"
+  download_and_verify "darwin" "${darwin_nojdk_url}" "${darwin_nojdk_sha256}"
 )
 
 echo "Done."
