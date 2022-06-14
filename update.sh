@@ -52,26 +52,27 @@ function download_and_verify() {
     echo "Downloading ${os} bazel binary for ${commit}.."
     downloaded_file="bazel_nojdk-${commit}-${os}-x86_64"
     curl "${url}" --output "${downloaded_file}"
-    echo "Verifying checksum for ${downloaded_file} to be ${sha256}.."
-    echo "${sha256} ${downloaded_file}" | sha256sum --check --status
+    echo "Verifying checksum for ${downloaded_file} to be ${sha256}.."i
+    if ! echo "${sha256} ${downloaded_file}" | sha256sum --check --status ; then
+      echo "ERROR: checksum of ${downloaded_file} did not match!"
+      echo "${sha256} ${downloaded_file}" | sha256sum --check --status
+      echo "${sha256} ${downloaded_file}" | sha256sum --check
+      exit 1
+    fi
 
     echo "Setting up bazel symlink for ${os}.."
     rm -f bazel && ln -s "${downloaded_file}" bazel
     chmod +x "${downloaded_file}"
 }
 
-
 # Update Linux binary.
 download_and_verify "linux" "${linux_nojdk_url}" "${linux_nojdk_sha256}"
 downloaded_file="bazel_nojdk-${commit}-linux-x86_64"
 ./${downloaded_file} license > LICENSE
 
-
-(
-  # Update macOS binary.
-  cp LICENSE "$(dirname "$0")/../darwin-x86_64/"
-  cd "$(dirname "$0")/../darwin-x86_64"
-  download_and_verify "darwin" "${darwin_nojdk_url}" "${darwin_nojdk_sha256}"
-)
+# Update macOS binary.
+cp LICENSE "$(dirname "$0")/../darwin-x86_64/"
+cd "$(dirname "$0")/../darwin-x86_64"
+download_and_verify "darwin" "${darwin_nojdk_url}" "${darwin_nojdk_sha256}"
 
 echo "Done."
